@@ -9,6 +9,7 @@ export interface Client {
   industry: string | null;
   contact_email: string | null;
   contact_phone: string | null;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -30,6 +31,7 @@ export interface Skill {
   skill_id: string;
   skill_name: string;
   category: string | null;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -43,6 +45,7 @@ export interface Project {
   total_estimated_hours: number | null;
   status: ProjectStatus;
   fk_project_manager_id: string | null;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -74,6 +77,7 @@ export interface Assignment {
   start_date: string | null;
   end_date: string | null;
   total_hours: number | null;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }

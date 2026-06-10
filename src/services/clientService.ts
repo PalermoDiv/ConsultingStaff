@@ -1,24 +1,24 @@
 import { supabase } from './supabase'
 import type { Client } from '../types/completetypes'
 
-// ==========================================
-// 1. LIST
-// ==========================================
-
-export async function getAllClients(): Promise<Client[]> {
-  const { data, error } = await supabase
+// ---- Do a function to get all the clients -----
+export async function getAllClients(includeInactive = false): Promise<Client[]> {
+  let query = supabase
     .from('clients')
     .select('*')
     .order('client_name', { ascending: true })
-
-  if (error) {
-    console.error('Error fetching clients:', error)
-    throw new Error('Failed to fetch clients')
+  
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
   }
-
-  return data as Client[]
+  
+  const { data, error } = await query
+  if (error) {
+    console.error('Error fetching the clients:', error);
+    throw new Error('Failed to fetch clients');
+  }
+  return data as Client[];
 }
-
 // ==========================================
 // 2. GET ONE
 // ==========================================
@@ -86,7 +86,27 @@ export async function updateClient(
 }
 
 // ==========================================
-// 5. DELETE
+// 5. SOFT DELETE (Deactivate - safer than hard delete)
+// ==========================================
+
+export async function deactivateClient(id: string): Promise<Client> {
+  const { data, error } = await supabase
+    .from('clients')
+    .update({ is_active: false, updated_at: new Date().toISOString() })
+    .eq('client_id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error deactivating client:', error)
+    throw new Error('Failed to deactivate client')
+  }
+
+  return data as Client
+}
+
+// ==========================================
+// 6. HARD DELETE (Only for admin use - dangerous!)
 // ==========================================
 
 export async function deleteClient(id: string): Promise<void> {

@@ -178,9 +178,9 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
     assignmentsResult,
     utilizationResult,
   ] = await Promise.all([
-    supabase.from('consultants').select('*', { count: 'exact', head: true }),
-    supabase.from('projects').select('*', { count: 'exact', head: true }),
-    supabase.from('assignments').select('*', { count: 'exact', head: true }),
+    supabase.from('consultants').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('projects').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('assignments').select('*', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('consultant_utilization').select('*'),
   ])
 

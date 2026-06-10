@@ -5,11 +5,17 @@ import type { Assignment, Consultant, Project } from '../types/completetypes'
 // 1. LIST
 // ==========================================
 
-export async function getAllAssignments(): Promise<Assignment[]> {
-  const { data, error } = await supabase
+export async function getAllAssignments(includeInactive = false): Promise<Assignment[]> {
+  let query = supabase
     .from('assignments')
     .select('*')
     .order('created_at', { ascending: false })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching assignments:', error)
@@ -19,12 +25,18 @@ export async function getAllAssignments(): Promise<Assignment[]> {
   return data as Assignment[]
 }
 
-export async function getAssignmentsByProject(projectId: string): Promise<Assignment[]> {
-  const { data, error } = await supabase
+export async function getAssignmentsByProject(projectId: string, includeInactive = false): Promise<Assignment[]> {
+  let query = supabase
     .from('assignments')
     .select('*')
     .eq('fk_project_id', projectId)
     .order('created_at', { ascending: false })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching assignments by project:', error)
@@ -34,12 +46,18 @@ export async function getAssignmentsByProject(projectId: string): Promise<Assign
   return data as Assignment[]
 }
 
-export async function getAssignmentsByConsultant(consultantId: string): Promise<Assignment[]> {
-  const { data, error } = await supabase
+export async function getAssignmentsByConsultant(consultantId: string, includeInactive = false): Promise<Assignment[]> {
+  let query = supabase
     .from('assignments')
     .select('*')
     .eq('fk_consultant_id', consultantId)
     .order('created_at', { ascending: false })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching assignments by consultant:', error)
@@ -54,6 +72,7 @@ export async function getActiveAssignmentsByConsultant(consultantId: string): Pr
     .from('assignments')
     .select('*')
     .eq('fk_consultant_id', consultantId)
+    .eq('is_active', true)
     .eq('status', 'Active')
     .order('created_at', { ascending: false })
 
@@ -232,7 +251,27 @@ export async function updateAssignmentStatus(
 }
 
 // ==========================================
-// 6. DELETE
+// 6. SOFT DELETE (Deactivate - safer than hard delete)
+// ==========================================
+
+export async function deactivateAssignment(id: string): Promise<Assignment> {
+  const { data, error } = await supabase
+    .from('assignments')
+    .update({ is_active: false, status: 'Cancelled', updated_at: new Date().toISOString() })
+    .eq('assignment_id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error deactivating assignment:', error)
+    throw new Error('Failed to deactivate assignment')
+  }
+
+  return data as Assignment
+}
+
+// ==========================================
+// 7. HARD DELETE (Only for admin use - dangerous!)
 // ==========================================
 
 export async function deleteAssignment(id: string): Promise<void> {
