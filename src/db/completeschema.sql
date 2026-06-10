@@ -37,6 +37,7 @@ CREATE TABLE clients (
   industry TEXT,
   contact_email TEXT,
   contact_phone TEXT,
+  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -60,6 +61,7 @@ CREATE TABLE skills (
   skill_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   skill_name TEXT NOT NULL UNIQUE,
   category TEXT, -- e.g., 'Technical', 'Soft Skill', 'Domain'
+  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -74,6 +76,7 @@ CREATE TABLE projects (
   total_estimated_hours INTEGER,
   status TEXT DEFAULT 'Planning' CHECK (status IN ('Planning', 'Active', 'On Hold', 'Completed', 'Cancelled')),
   fk_project_manager_id UUID REFERENCES consultants(consultant_id) ON DELETE SET NULL,
+  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -117,6 +120,7 @@ CREATE TABLE assignments (
   start_date DATE,
   end_date DATE,
   total_hours INTEGER,
+  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -140,7 +144,7 @@ SELECT
     ELSE 'Available'
   END AS availability_status
 FROM consultants c
-LEFT JOIN assignments a ON c.consultant_id = a.fk_consultant_id AND a.status = 'Active'
+LEFT JOIN assignments a ON c.consultant_id = a.fk_consultant_id AND a.status = 'Active' AND a.is_active = true
 WHERE c.is_active = true
 GROUP BY c.consultant_id, c.first_name, c.last_name, c.position, c.capacity_hours_per_week;
 
@@ -176,3 +180,19 @@ CREATE POLICY "Allow all" ON projects FOR ALL USING (true);
 CREATE POLICY "Allow all" ON consultant_skills FOR ALL USING (true);
 CREATE POLICY "Allow all" ON project_skills FOR ALL USING (true);
 CREATE POLICY "Allow all" ON assignments FOR ALL USING (true);
+
+-- ============================================
+-- 8. MIGRATIONS (for existing databases)
+-- ============================================
+
+-- Add is_active column to clients if it doesn't exist (for soft delete)
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+
+-- Add is_active column to skills if it doesn't exist (for soft delete)
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+
+-- Add is_active column to projects if it doesn't exist (for soft delete)
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+
+-- Add is_active column to assignments if it doesn't exist (for soft delete)
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;

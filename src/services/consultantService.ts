@@ -5,11 +5,17 @@ import type { Consultant, ConsultantSkill, Skill } from '../types/completetypes'
 // 1. LIST
 // ==========================================
 
-export async function getAllConsultants(): Promise<Consultant[]> {
-  const { data, error } = await supabase
+export async function getAllConsultants(includeInactive = false): Promise<Consultant[]> {
+  let query = supabase
     .from('consultants')
     .select('*')
     .order('last_name', { ascending: true })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching consultants:', error)

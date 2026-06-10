@@ -5,11 +5,17 @@ import type { Project, ProjectSkill, Skill, Client, Consultant } from '../types/
 // 1. LIST
 // ==========================================
 
-export async function getAllProjects(): Promise<Project[]> {
-  const { data, error } = await supabase
+export async function getAllProjects(includeInactive = false): Promise<Project[]> {
+  let query = supabase
     .from('projects')
     .select('*')
     .order('created_at', { ascending: false })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching projects:', error)
@@ -23,6 +29,7 @@ export async function getActiveProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from('projects')
     .select('*')
+    .eq('is_active', true)
     .eq('status', 'Active')
     .order('created_at', { ascending: false })
 
@@ -34,12 +41,18 @@ export async function getActiveProjects(): Promise<Project[]> {
   return data as Project[]
 }
 
-export async function getProjectsByClient(clientId: string): Promise<Project[]> {
-  const { data, error } = await supabase
+export async function getProjectsByClient(clientId: string, includeInactive = false): Promise<Project[]> {
+  let query = supabase
     .from('projects')
     .select('*')
     .eq('fk_client_id', clientId)
     .order('created_at', { ascending: false })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching projects by client:', error)
@@ -154,7 +167,27 @@ export async function updateProject(
 }
 
 // ==========================================
-// 5. DELETE
+// 5. SOFT DELETE (Deactivate - safer than hard delete)
+// ==========================================
+
+export async function deactivateProject(id: string): Promise<Project> {
+  const { data, error } = await supabase
+    .from('projects')
+    .update({ is_active: false, updated_at: new Date().toISOString() })
+    .eq('project_id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error deactivating project:', error)
+    throw new Error('Failed to deactivate project')
+  }
+
+  return data as Project
+}
+
+// ==========================================
+// 6. HARD DELETE (Only for admin use - dangerous!)
 // ==========================================
 
 export async function deleteProject(id: string): Promise<void> {

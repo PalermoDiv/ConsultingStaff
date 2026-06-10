@@ -35,5 +35,8 @@ export interface Projects {
   project_id: string;
   project_name: string;
   description: string;
-  fk_client_id: 
+  fk_client_id: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
