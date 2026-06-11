@@ -31,49 +31,163 @@ Enterprise-style web application for allocating consultants to projects based on
 - Explain the "why" behind architectural decisions.
 - Keep it stupidly simple (KISS principle).
 
-## Project Structure (Planned)
+## Project Structure
+
+### Current (Implemented)
 ```
 ConsultantStaffing/
 ├── src/
-│   ├── components/        # Reusable UI components
-│   ├── pages/             # Route-level page components
-│   ├── hooks/             # Custom React hooks
-│   ├── context/            # Context API state management
-│   ├── services/          # API calls / data fetching layer
-│   ├── types/             # TypeScript interfaces & types
-│   ├── utils/             # Helper functions
-│   ├── db/                # SQL schema, stored procedures, migrations
-│   └── api/               # Backend API layer (if applicable)
-├── public/                # Static assets
-├── .github/               # CI/CD workflows (if needed)
-├── AGENTS.md              # This file
-└── README.md              # Human-facing documentation
+│   ├── context/            ✅ Global state (React Context + useReducer)
+│   │   ├── AppContext.tsx
+│   │   ├── AppContext.types.ts
+│   │   ├── AppContext.reducer.ts
+│   │   └── AppContext.actions.ts
+│   ├── services/           ✅ API layer (Supabase calls)
+│   │   ├── clientService.ts
+│   │   ├── consultantService.ts
+│   │   ├── skillService.ts
+│   │   ├── projectService.ts
+│   │   ├── assignmentService.ts
+│   │   ├── dashboardService.ts
+│   │   └── supabase.ts
+│   ├── types/              ✅ TypeScript interfaces
+│   │   ├── completetypes.ts
+│   │   └── types.ts
+│   ├── db/                 ✅ SQL schema
+│   │   ├── completeschema.sql
+│   │   └── schema.sql
+│   ├── components/         ❌ Empty (pending UI build)
+│   ├── pages/              ❌ Empty (pending routing)
+│   ├── hooks/              ❌ Empty (pending custom hooks)
+│   └── utils/              ❌ Empty (pending helpers)
+├── public/                 ✅ Static assets
+├── AGENTS.md               ✅ This file
+└── README.md               ✅ Human-facing documentation
 ```
 
-## Key Features (To Build)
-1. Dashboard with KPIs and charts (Recharts)
-2. Consultant Management (CRUD + skills tracking)
-3. Project Management (CRUD + skill requirements)
-4. Assignment Management (allocate consultants, detect overutilization)
-5. Staffing Recommendations Engine (skill + availability matching)
-6. Utilization Analytics (interactive dashboards)
+## Development Phases
 
-## Dependencies to Add (Pending User Confirmation)
+### ✅ Phase 0: Project Setup
+- React 19 + Vite scaffold
+- Tailwind CSS v4 configured
+- React Router v7 installed
+- Environment variables configured
+
+### ✅ Phase 1: Database Schema
+- Complete PostgreSQL schema in `completeschema.sql`
+- Tables: clients, consultants, skills, projects, consultant_skills, project_skills, assignments
+- Views: consultant_utilization
+- Indexes for performance
+- Row Level Security (RLS) policies
+- Soft delete support (`is_active` on all tables)
+
+### ✅ Phase 2: TypeScript Types
+- `completetypes.ts` with all database interfaces
+- Enums: ConsultantPosition, ProjectStatus, AssignmentStatus, AvailabilityStatus
+- Type-safe with `is_active` fields
+
+### ✅ Phase 3: Database Connection
+- `supabase.ts` client configured
+- Reads from `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+
+### ✅ Phase 4: Service Layer
+- 6 service files implementing CRUD operations
+- Pattern: `getAllX()`, `getXById()`, `createX()`, `updateX()`, `deactivateX()`, `deleteX()`
+- `assignmentService.ts` includes over-utilization protection
+- `dashboardService.ts` includes KPIs and staffing recommendations
+
+### ✅ Phase 5: Soft Delete Pattern
+- All major tables have `is_active BOOLEAN DEFAULT true`
+- List functions filter `is_active = true` by default
+- `deactivateX()` functions for safe deletion
+- `deleteX()` functions reserved for admin use
+
+### ✅ Phase 6: Global State (React Context + useReducer)
+- `AppContext.tsx` — Provider wrapping the app
+- `AppContext.types.ts` — State shape and action types
+- `AppContext.reducer.ts` — Reducer logic for all entities
+- `AppContext.actions.ts` — Async thunks (load, add, edit, remove for each entity)
+- `loadAllData()` — Fetches all entities in parallel on app start
+
+### ❌ Phase 7: UI Components (Next)
+- Tables with `@tanstack/react-table`
+- Forms with `react-hook-form` + `zod`
+- Charts with `recharts`
+- Layout components (sidebar, header)
+
+### ❌ Phase 8: Routing & Pages
+- `/` — Dashboard
+- `/consultants` — Consultant management
+- `/projects` — Project management
+- `/assignments` — Assignment management
+- `/recommendations` — Staffing recommendations
+
+### ❌ Phase 9: Integration & Testing
+- End-to-end CRUD testing
+- Assignment over-utilization testing
+- Dashboard KPI verification
+
+### ❌ Phase 10: Deployment
+- Vercel frontend deployment
+- Supabase production environment
+
+## Key Features Status
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Dashboard with KPIs | ❌ | Backend ready, needs UI |
+| Consultant Management | ✅ Backend | CRUD + skills tracking |
+| Project Management | ✅ Backend | CRUD + skill requirements |
+| Assignment Management | ✅ Backend | Allocate + overutilization detection |
+| Staffing Recommendations | ✅ Backend | Skill + availability matching |
+| Utilization Analytics | ✅ Backend | Interactive dashboards pending UI |
+
+## Dependencies
+
+### ✅ Installed
+- `react` ^19.2.6
+- `react-dom` ^19.2.6
+- `react-router-dom` ^7.17.0
+- `@supabase/supabase-js` ^2.108.0
+- `tailwindcss` ^4.3.0
+- `@tailwindcss/vite` ^4.3.0
+- `typescript` ~6.0.2
+- `vite` ^8.0.12
+- `eslint` ^10.3.0
+
+### ❌ Pending Installation
 - `recharts` — Data visualization
 - `@tanstack/react-table` — Enterprise data tables
 - `react-hook-form` — Form state management
 - `zod` — Schema validation
-- `@supabase/supabase-js` — Supabase client for database/auth/realtime
+
+## Architecture Notes
+
+### Data Flow
+```
+User Action → Component → Context Action → Service → Supabase → Database
+     ↑                                                        |
+     └────────────── Re-render with new data ←─────────────────┘
+```
+
+### Soft Delete Pattern
+All entities use `is_active` boolean:
+- `getAllX()` → filters `is_active = true` by default
+- `deactivateX(id)` → sets `is_active = false` (recommended)
+- `deleteX(id)` → hard delete (admin only)
+
+### State Management
+- React Context + `useReducer` for global state
+- `dispatch` sends actions to reducer
+- Reducer updates immutable state
+- Components re-render automatically
+- Async actions handle loading/error states
 
 ## Database Notes
 - User is familiar with raw SQL and comfortable writing table schemas directly in Supabase's SQL Editor.
 - Table definitions and views are managed via SQL. Stored procedures are optional for complex logic only.
 - No ORM required for schema, but modern tools can be considered if complexity demands it.
 - Frontend connects via Supabase client (`@supabase/supabase-js`), not direct PostgreSQL connections.
-
-## State Management
-- Use React Context API + `useReducer` for global state.
-- Avoid Redux unless complexity demands it.
 
 ## Deployment Constraints
 - `main` branch must always build successfully (`npm run build` passes, `npm run lint` passes).
@@ -83,3 +197,5 @@ ConsultantStaffing/
 - Update this file if tech stack or architecture changes.
 - Verify build after any structural changes.
 - Keep `README.md` in sync with `AGENTS.md` for human contributors.
+- Use `type-only imports` for TypeScript interfaces: `import type { X } from '...'`
+- Follow the soft delete pattern for all new entities.
