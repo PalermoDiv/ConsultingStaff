@@ -14,24 +14,26 @@ export function Layout() {
   const location = useLocation()
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-slate-50">
       {/* Sidebar */}
       <aside
         className={`${
           isSidebarOpen ? 'w-64' : 'w-16'
-        } bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}
+        } bg-slate-900 border-r border-slate-700 transition-all duration-300 flex flex-col`}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl">🎯</span>
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-white text-lg font-bold">S</span>
+            </div>
             {isSidebarOpen && (
-              <span className="font-bold text-gray-800 text-lg">Staffing</span>
+              <span className="font-bold text-white text-lg tracking-tight">StaffingPro</span>
             )}
           </Link>
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-gray-500 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100"
+            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
           >
             {isSidebarOpen ? '◀' : '▶'}
           </button>
@@ -47,8 +49,8 @@ export function Layout() {
                 to={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                 }`}
                 title={!isSidebarOpen ? item.name : undefined}
               >
@@ -61,8 +63,10 @@ export function Layout() {
 
         {/* Footer */}
         {isSidebarOpen && (
-          <div className="p-4 border-t border-gray-200 text-xs text-gray-500 text-center">
-            Consultant Staffing v1.0
+          <div className="p-4 border-t border-slate-700">
+            <div className="text-xs text-slate-500 text-center">
+              StaffingPro v1.0
+            </div>
           </div>
         )}
       </aside>
@@ -70,20 +74,29 @@ export function Layout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold text-gray-800">
-            {navigation.find((n) => n.href === location.pathname)?.name || 'Welcome'}
-          </h1>
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">Welcome back</span>
-            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+            <h1 className="text-xl font-semibold text-slate-900">
+              {navigation.find((n) => n.href === location.pathname)?.name || 'Welcome'}
+            </h1>
+            <span className="text-xs text-slate-400 uppercase tracking-wider font-medium bg-slate-100 px-2 py-1 rounded">
+              {location.pathname === '/dashboard' && 'Overview'}
+              {location.pathname === '/consultants' && 'Management'}
+              {location.pathname === '/projects' && 'Management'}
+              {location.pathname === '/assignments' && 'Operations'}
+              {location.pathname === '/recommendations' && 'AI Engine'}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-500">Welcome back</span>
+            <div className="w-9 h-9 rounded-full bg-slate-900 flex items-center justify-center text-white text-sm font-semibold border-2 border-blue-500">
               U
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
           <Outlet />
         </main>
       </div>
