@@ -49,8 +49,8 @@ export async function loadClients(dispatch: Dispatch<AppAction>) {
   try {
     const clients = await getAllClients()
     dispatch({ type: 'SET_CLIENTS', payload: clients })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load clients' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load clients' })
   }
 }
 
@@ -59,8 +59,8 @@ export async function addClient(dispatch: Dispatch<AppAction>, client: Omit<Clie
   try {
     const newClient = await createClient(client)
     dispatch({ type: 'ADD_CLIENT', payload: newClient })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to create client' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to create client' })
   }
 }
 
@@ -69,8 +69,8 @@ export async function editClient(dispatch: Dispatch<AppAction>, id: string, upda
   try {
     const updated = await updateClient(id, updates)
     dispatch({ type: 'UPDATE_CLIENT', payload: updated })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to update client' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to update client' })
   }
 }
 
@@ -79,8 +79,8 @@ export async function removeClient(dispatch: Dispatch<AppAction>, id: string) {
   try {
     await deactivateClient(id)
     dispatch({ type: 'REMOVE_CLIENT', payload: id })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to remove client' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to remove client' })
   }
 }
 
@@ -93,8 +93,8 @@ export async function loadConsultants(dispatch: Dispatch<AppAction>) {
   try {
     const consultants = await getAllConsultants()
     dispatch({ type: 'SET_CONSULTANTS', payload: consultants })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load consultants' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load consultants' })
   }
 }
 
@@ -103,8 +103,8 @@ export async function addConsultant(dispatch: Dispatch<AppAction>, consultant: O
   try {
     const newConsultant = await createConsultant(consultant)
     dispatch({ type: 'ADD_CONSULTANT', payload: newConsultant })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to create consultant' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to create consultant' })
   }
 }
 
@@ -113,8 +113,8 @@ export async function editConsultant(dispatch: Dispatch<AppAction>, id: string, 
   try {
     const updated = await updateConsultant(id, updates)
     dispatch({ type: 'UPDATE_CONSULTANT', payload: updated })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to update consultant' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to update consultant' })
   }
 }
 
@@ -123,8 +123,8 @@ export async function removeConsultant(dispatch: Dispatch<AppAction>, id: string
   try {
     await deactivateConsultant(id)
     dispatch({ type: 'REMOVE_CONSULTANT', payload: id })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to remove consultant' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to remove consultant' })
   }
 }
 
@@ -137,8 +137,8 @@ export async function loadSkills(dispatch: Dispatch<AppAction>) {
   try {
     const skills = await getAllSkills()
     dispatch({ type: 'SET_SKILLS', payload: skills })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load skills' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load skills' })
   }
 }
 
@@ -147,8 +147,8 @@ export async function addSkill(dispatch: Dispatch<AppAction>, skill: Omit<Skill,
   try {
     const newSkill = await createSkill(skill)
     dispatch({ type: 'ADD_SKILL', payload: newSkill })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to create skill' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to create skill' })
   }
 }
 
@@ -157,8 +157,8 @@ export async function editSkill(dispatch: Dispatch<AppAction>, id: string, updat
   try {
     const updated = await updateSkill(id, updates)
     dispatch({ type: 'UPDATE_SKILL', payload: updated })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to update skill' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to update skill' })
   }
 }
 
@@ -167,8 +167,8 @@ export async function removeSkill(dispatch: Dispatch<AppAction>, id: string) {
   try {
     await deactivateSkill(id)
     dispatch({ type: 'REMOVE_SKILL', payload: id })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to remove skill' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to remove skill' })
   }
 }
 
@@ -181,8 +181,8 @@ export async function loadProjects(dispatch: Dispatch<AppAction>) {
   try {
     const projects = await getAllProjects()
     dispatch({ type: 'SET_PROJECTS', payload: projects })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load projects' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load projects' })
   }
 }
 
@@ -191,8 +191,8 @@ export async function addProject(dispatch: Dispatch<AppAction>, project: Omit<Pr
   try {
     const newProject = await createProject(project)
     dispatch({ type: 'ADD_PROJECT', payload: newProject })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to create project' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to create project' })
   }
 }
 
@@ -201,8 +201,8 @@ export async function editProject(dispatch: Dispatch<AppAction>, id: string, upd
   try {
     const updated = await updateProject(id, updates)
     dispatch({ type: 'UPDATE_PROJECT', payload: updated })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to update project' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to update project' })
   }
 }
 
@@ -211,8 +211,8 @@ export async function removeProject(dispatch: Dispatch<AppAction>, id: string) {
   try {
     await deactivateProject(id)
     dispatch({ type: 'REMOVE_PROJECT', payload: id })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to remove project' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to remove project' })
   }
 }
 
@@ -225,8 +225,8 @@ export async function loadAssignments(dispatch: Dispatch<AppAction>) {
   try {
     const assignments = await getAllAssignments()
     dispatch({ type: 'SET_ASSIGNMENTS', payload: assignments })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load assignments' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load assignments' })
   }
 }
 
@@ -235,8 +235,8 @@ export async function addAssignment(dispatch: Dispatch<AppAction>, assignment: O
   try {
     const newAssignment = await createAssignment(assignment)
     dispatch({ type: 'ADD_ASSIGNMENT', payload: newAssignment })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to create assignment' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to create assignment' })
   }
 }
 
@@ -245,8 +245,8 @@ export async function editAssignment(dispatch: Dispatch<AppAction>, id: string, 
   try {
     const updated = await updateAssignment(id, updates)
     dispatch({ type: 'UPDATE_ASSIGNMENT', payload: updated })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to update assignment' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to update assignment' })
   }
 }
 
@@ -255,8 +255,8 @@ export async function removeAssignment(dispatch: Dispatch<AppAction>, id: string
   try {
     await deactivateAssignment(id)
     dispatch({ type: 'REMOVE_ASSIGNMENT', payload: id })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to remove assignment' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to remove assignment' })
   }
 }
 
@@ -269,8 +269,8 @@ export async function loadUtilization(dispatch: Dispatch<AppAction>) {
   try {
     const utilization = await getConsultantUtilization()
     dispatch({ type: 'SET_UTILIZATION', payload: utilization })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load utilization' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load utilization' })
   }
 }
 
@@ -296,7 +296,7 @@ export async function loadAllData(dispatch: Dispatch<AppAction>) {
     dispatch({ type: 'SET_PROJECTS', payload: projects })
     dispatch({ type: 'SET_ASSIGNMENTS', payload: assignments })
     dispatch({ type: 'SET_UTILIZATION', payload: utilization })
-  } catch (error: any) {
-    dispatch({ type: 'SET_ERROR', payload: error.message || 'Failed to load data' })
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Failed to load data' })
   }
 }
