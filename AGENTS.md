@@ -56,8 +56,15 @@ ConsultantStaffing/
 │   ├── db/                 ✅ SQL schema
 │   │   ├── completeschema.sql
 │   │   └── schema.sql
-│   ├── components/         ❌ Empty (pending UI build)
-│   ├── pages/              ❌ Empty (pending routing)
+│   ├── components/         ✅ Layout component
+│   │   └── Layout.tsx
+│   ├── pages/              ✅ Placeholder pages (routing done)
+│   │   ├── LandingPage.tsx
+│   │   ├── DashboardPage.tsx
+│   │   ├── ConsultantsPage.tsx
+│   │   ├── ProjectsPage.tsx
+│   │   ├── AssignmentsPage.tsx
+│   │   └── RecommendationsPage.tsx
 │   ├── hooks/              ❌ Empty (pending custom hooks)
 │   └── utils/              ❌ Empty (pending helpers)
 ├── public/                 ✅ Static assets
@@ -109,14 +116,16 @@ ConsultantStaffing/
 - `AppContext.actions.ts` — Async thunks (load, add, edit, remove for each entity)
 - `loadAllData()` — Fetches all entities in parallel on app start
 
-### ❌ Phase 7: UI Components (Next)
-- Tables with `@tanstack/react-table`
-- Forms with `react-hook-form` + `zod`
-- Charts with `recharts`
-- Layout components (sidebar, header)
+### 🔄 Phase 7: UI Components (In Progress)
+- ✅ Layout component (sidebar + header) with Tailwind CSS
+- ✅ Collapsible sidebar navigation
+- ❌ Data tables with `@tanstack/react-table`
+- ❌ Forms with `react-hook-form` + `zod`
+- ❌ Charts with `recharts`
 
-### ❌ Phase 8: Routing & Pages
-- `/` — Dashboard
+### ✅ Phase 8: Routing & Pages
+- `/` — Landing page
+- `/dashboard` — Dashboard
 - `/consultants` — Consultant management
 - `/projects` — Project management
 - `/assignments` — Assignment management
@@ -141,6 +150,8 @@ ConsultantStaffing/
 | Assignment Management | ✅ Backend | Allocate + overutilization detection |
 | Staffing Recommendations | ✅ Backend | Skill + availability matching |
 | Utilization Analytics | ✅ Backend | Interactive dashboards pending UI |
+| App Layout | ✅ | Sidebar + header + navigation |
+| Routing | ✅ | All pages with React Router v7 |
 
 ## Dependencies
 
@@ -155,7 +166,7 @@ ConsultantStaffing/
 - `vite` ^8.0.12
 - `eslint` ^10.3.0
 
-### ❌ Pending Installation
+### ✅ All Dependencies Installed
 - `recharts` — Data visualization
 - `@tanstack/react-table` — Enterprise data tables
 - `react-hook-form` — Form state management
