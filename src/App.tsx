@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
 import LandingPage from './pages/LandingPage'
+import AuthPage from './pages/AuthPage'
 import DashboardPage from './pages/DashboardPage'
 import ConsultantsPage from './pages/ConsultantsPage'
 import ProjectsPage from './pages/ProjectsPage'
@@ -13,8 +16,16 @@ const router = createBrowserRouter([
     element: <LandingPage />,
   },
   {
+    path: '/login',
+    element: <AuthPage />,
+  },
+  {
     path: '/',
-    element: <Layout />,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: 'dashboard',
@@ -41,5 +52,9 @@ const router = createBrowserRouter([
 ])
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }

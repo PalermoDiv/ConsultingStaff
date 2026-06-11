@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
@@ -12,6 +13,11 @@ const navigation = [
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const location = useLocation()
+  const { user, signOut } = useAuth()
+
+  const handleLogout = async () => {
+    await signOut()
+  }
 
   return (
     <div className="flex h-screen bg-slate-50">
@@ -88,10 +94,18 @@ export function Layout() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-500">Welcome back</span>
-            <div className="w-9 h-9 rounded-full bg-slate-900 flex items-center justify-center text-white text-sm font-semibold border-2 border-blue-500">
-              U
+            <span className="text-sm text-slate-500 hidden sm:block">
+              {user?.email}
+            </span>
+            <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold border-2 border-blue-400">
+              {user?.email?.charAt(0).toUpperCase() || 'U'}
             </div>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-slate-500 hover:text-red-600 transition-colors font-medium"
+            >
+              Logout
+            </button>
           </div>
         </header>
 
