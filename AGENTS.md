@@ -37,12 +37,13 @@ Enterprise-style web application for allocating consultants to projects based on
 ```
 ConsultantStaffing/
 ├── src/
-│   ├── context/            ✅ Global state (React Context + useReducer)
-│   │   ├── AppContext.tsx
+│   ├── context/            ✅ Global state + Auth
+│   │   ├── AppContext.tsx        (React Context + useReducer)
 │   │   ├── AppContext.types.ts
 │   │   ├── AppContext.reducer.ts
-│   │   └── AppContext.actions.ts
-│   ├── services/           ✅ API layer (Supabase calls)
+│   │   ├── AppContext.actions.ts
+│   │   └── AuthContext.tsx       (Supabase Auth)
+│   ├── services/           ✅ API layer
 │   │   ├── clientService.ts
 │   │   ├── consultantService.ts
 │   │   ├── skillService.ts
@@ -56,17 +57,25 @@ ConsultantStaffing/
 │   ├── db/                 ✅ SQL schema
 │   │   ├── completeschema.sql
 │   │   └── schema.sql
-│   ├── components/         ✅ Layout component
-│   │   └── Layout.tsx
-│   ├── pages/              ✅ Placeholder pages (routing done)
-│   │   ├── LandingPage.tsx
-│   │   ├── DashboardPage.tsx
-│   │   ├── ConsultantsPage.tsx
-│   │   ├── ProjectsPage.tsx
-│   │   ├── AssignmentsPage.tsx
-│   │   └── RecommendationsPage.tsx
-│   ├── hooks/              ❌ Empty (pending custom hooks)
-│   └── utils/              ❌ Empty (pending helpers)
+│   ├── components/         ✅ UI components
+│   │   ├── Layout.tsx            (Sidebar + Header)
+│   │   ├── ProtectedRoute.tsx    (Auth guard)
+│   │   ├── ui/
+│   │   │   └── Modal.tsx         (Form popup)
+│   │   ├── forms/
+│   │   │   └── ConsultantForm.tsx (react-hook-form + zod)
+│   │   └── tables/
+│   │       └── ConsultantsTable.tsx (@tanstack/react-table)
+│   ├── pages/              ✅ All pages
+│   │   ├── LandingPage.tsx       (Public welcome page)
+│   │   ├── AuthPage.tsx          (Login/Signup)
+│   │   ├── DashboardPage.tsx     (KPIs + stats)
+│   │   ├── ConsultantsPage.tsx   (Full CRUD)
+│   │   ├── ProjectsPage.tsx      (Read + Delete)
+│   │   ├── AssignmentsPage.tsx   (Read + Delete)
+│   │   └── RecommendationsPage.tsx (Placeholder)
+│   ├── hooks/              ❌ Empty (pending)
+│   └── utils/              ❌ Empty (pending)
 ├── public/                 ✅ Static assets
 ├── AGENTS.md               ✅ This file
 └── README.md               ✅ Human-facing documentation
@@ -116,27 +125,37 @@ ConsultantStaffing/
 - `AppContext.actions.ts` — Async thunks (load, add, edit, remove for each entity)
 - `loadAllData()` — Fetches all entities in parallel on app start
 
-### 🔄 Phase 7: UI Components (In Progress)
+### ✅ Phase 7: UI Components
 - ✅ Layout component (sidebar + header) with Tailwind CSS
 - ✅ Collapsible sidebar navigation
-- ❌ Data tables with `@tanstack/react-table`
-- ❌ Forms with `react-hook-form` + `zod`
-- ❌ Charts with `recharts`
+- ✅ Data tables with `@tanstack/react-table` (sorting, filtering, pagination)
+- ✅ Forms with `react-hook-form` + `zod` (validated inputs, error handling)
+- ✅ Modal component for form popups
+- ❌ Charts with `recharts` (pending dashboard visualizations)
 
 ### ✅ Phase 8: Routing & Pages
-- `/` — Landing page
-- `/dashboard` — Dashboard
-- `/consultants` — Consultant management
-- `/projects` — Project management
-- `/assignments` — Assignment management
-- `/recommendations` — Staffing recommendations
+- `/` — Landing page (public)
+- `/login` — Authentication (login/signup)
+- `/dashboard` — Dashboard with KPIs
+- `/consultants` — Consultant management (full CRUD)
+- `/projects` — Project management (read + delete)
+- `/assignments` — Assignment management (read + delete)
+- `/recommendations` — Staffing recommendations (placeholder)
 
-### ❌ Phase 9: Integration & Testing
+### ✅ Phase 9: Authentication
+- `AuthContext.tsx` — Supabase auth state management
+- `AuthPage.tsx` — Login/Signup with form validation
+- `ProtectedRoute.tsx` — Route guard (requires login)
+- Auto session persistence (stays logged in on refresh)
+- Logout button in header
+- User email displayed in header
+
+### ❌ Phase 10: Integration & Testing
 - End-to-end CRUD testing
 - Assignment over-utilization testing
 - Dashboard KPI verification
 
-### ❌ Phase 10: Deployment
+### ❌ Phase 11: Deployment
 - Vercel frontend deployment
 - Supabase production environment
 
@@ -144,18 +163,19 @@ ConsultantStaffing/
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Dashboard with KPIs | ❌ | Backend ready, needs UI |
-| Consultant Management | ✅ Backend | CRUD + skills tracking |
-| Project Management | ✅ Backend | CRUD + skill requirements |
-| Assignment Management | ✅ Backend | Allocate + overutilization detection |
-| Staffing Recommendations | ✅ Backend | Skill + availability matching |
+| Dashboard with KPIs | ✅ | Stats cards, project breakdown, team composition |
+| Consultant Management | ✅ | Full CRUD with table + modal form |
+| Project Management | 🔄 | Read + Delete. Create/Edit forms pending |
+| Assignment Management | 🔄 | Read + Delete. Create/Edit forms pending |
+| Staffing Recommendations | ✅ Backend | UI placeholder exists |
 | Utilization Analytics | ✅ Backend | Interactive dashboards pending UI |
+| Authentication | ✅ | Login/Signup + protected routes |
 | App Layout | ✅ | Sidebar + header + navigation |
 | Routing | ✅ | All pages with React Router v7 |
 
 ## Dependencies
 
-### ✅ Installed
+### ✅ All Dependencies Installed
 - `react` ^19.2.6
 - `react-dom` ^19.2.6
 - `react-router-dom` ^7.17.0
@@ -165,12 +185,11 @@ ConsultantStaffing/
 - `typescript` ~6.0.2
 - `vite` ^8.0.12
 - `eslint` ^10.3.0
-
-### ✅ All Dependencies Installed
 - `recharts` — Data visualization
 - `@tanstack/react-table` — Enterprise data tables
 - `react-hook-form` — Form state management
 - `zod` — Schema validation
+- `@hookform/resolvers` — react-hook-form + zod integration
 
 ## Architecture Notes
 
@@ -181,6 +200,12 @@ User Action → Component → Context Action → Service → Supabase → Databa
      └────────────── Re-render with new data ←─────────────────┘
 ```
 
+### Auth Flow
+```
+Login → Supabase Auth → AuthContext updates → ProtectedRoute allows access
+Logout → Supabase Auth → AuthContext clears → Redirect to /login
+```
+
 ### Soft Delete Pattern
 All entities use `is_active` boolean:
 - `getAllX()` → filters `is_active = true` by default
@@ -189,6 +214,7 @@ All entities use `is_active` boolean:
 
 ### State Management
 - React Context + `useReducer` for global state
+- AuthContext for authentication state
 - `dispatch` sends actions to reducer
 - Reducer updates immutable state
 - Components re-render automatically
