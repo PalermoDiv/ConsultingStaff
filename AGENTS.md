@@ -63,7 +63,9 @@ ConsultantStaffing/
 │   │   ├── ui/
 │   │   │   └── Modal.tsx         (Form popup)
 │   │   ├── forms/
-│   │   │   └── ConsultantForm.tsx (react-hook-form + zod)
+│   │   │   ├── ConsultantForm.tsx (react-hook-form + zod)
+│   │   │   ├── ProjectForm.tsx (react-hook-form + zod)
+│   │   │   └── AssignmentForm.tsx (react-hook-form + zod)
 │   │   └── tables/
 │   │       └── ConsultantsTable.tsx (@tanstack/react-table)
 │   ├── pages/              ✅ All pages
@@ -71,9 +73,9 @@ ConsultantStaffing/
 │   │   ├── AuthPage.tsx          (Login/Signup)
 │   │   ├── DashboardPage.tsx     (KPIs + stats)
 │   │   ├── ConsultantsPage.tsx   (Full CRUD)
-│   │   ├── ProjectsPage.tsx      (Read + Delete)
-│   │   ├── AssignmentsPage.tsx   (Read + Delete)
-│   │   └── RecommendationsPage.tsx (Placeholder)
+│   │   ├── ProjectsPage.tsx      (Full CRUD)
+│   │   ├── AssignmentsPage.tsx   (Full CRUD)
+│   │   └── RecommendationsPage.tsx (AI-powered matching)
 │   ├── hooks/              ❌ Empty (pending)
 │   └── utils/              ❌ Empty (pending)
 ├── public/                 ✅ Static assets
@@ -133,14 +135,14 @@ ConsultantStaffing/
 - ✅ Modal component for form popups
 - ❌ Charts with `recharts` (pending dashboard visualizations)
 
-### ✅ Phase 8: Routing & Pages
+### ✅ Phase 8: Routing & Pages (Complete)
 - `/` — Landing page (public)
 - `/login` — Authentication (login/signup)
 - `/dashboard` — Dashboard with KPIs
 - `/consultants` — Consultant management (full CRUD)
-- `/projects` — Project management (read + delete)
-- `/assignments` — Assignment management (read + delete)
-- `/recommendations` — Staffing recommendations (placeholder)
+- `/projects` — Project management (full CRUD)
+- `/assignments` — Assignment management (full CRUD)
+- `/recommendations` — Staffing recommendations (AI-powered matching)
 
 ### ✅ Phase 9: Authentication
 - `AuthContext.tsx` — Supabase auth state management
@@ -165,10 +167,10 @@ ConsultantStaffing/
 |---------|--------|-------|
 | Dashboard with KPIs | ✅ | Stats cards, project breakdown, team composition |
 | Consultant Management | ✅ | Full CRUD with table + modal form |
-| Project Management | 🔄 | Read + Delete. Create/Edit forms pending |
-| Assignment Management | 🔄 | Read + Delete. Create/Edit forms pending |
-| Staffing Recommendations | ✅ Backend | UI placeholder exists |
-| Utilization Analytics | ✅ Backend | Interactive dashboards pending UI |
+| Project Management | ✅ | Full CRUD with table + modal form |
+| Assignment Management | ✅ | Full CRUD with table + modal form |
+| Staffing Recommendations | ✅ | AI-powered matching with skill scoring |
+| Utilization Analytics | ✅ | Real-time availability + overallocation tracking |
 | Authentication | ✅ | Login/Signup + protected routes |
 | App Layout | ✅ | Sidebar + header + navigation |
 | Routing | ✅ | All pages with React Router v7 |

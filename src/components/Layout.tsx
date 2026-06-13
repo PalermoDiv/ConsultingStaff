@@ -1,6 +1,8 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useAppContext } from '../context/AppContext'
+import { loadAllData } from '../context/AppContext.actions'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
@@ -14,6 +16,13 @@ export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const location = useLocation()
   const { user, signOut } = useAuth()
+  const { dispatch } = useAppContext()
+
+  useEffect(() => {
+    if (user) {
+      loadAllData(dispatch)
+    }
+  }, [user, dispatch])
 
   const handleLogout = async () => {
     await signOut()

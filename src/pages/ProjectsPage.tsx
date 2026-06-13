@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { removeProject } from '../context/AppContext.actions'
+import { ProjectForm } from '../components/forms/ProjectForm'
+import { Modal } from '../components/ui/Modal'
+import type { Project } from '../types/completetypes'
 
 export default function ProjectsPage() {
   const { state, dispatch } = useAppContext()
   const { projects, clients, loading } = state
   const [searchQuery, setSearchQuery] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
 
   const filteredProjects = projects.filter((project) =>
     project.project_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -18,10 +23,20 @@ export default function ProjectsPage() {
     return client?.client_name || 'Unknown Client'
   }
 
+  const handleEdit = (project: Project) => {
+    setEditingProject(project)
+    setIsModalOpen(true)
+  }
+
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
       await removeProject(dispatch, id)
     }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingProject(null)
   }
 
   return (
@@ -32,7 +47,13 @@ export default function ProjectsPage() {
           <h2 className="text-2xl font-bold text-slate-900">Projects</h2>
           <p className="text-slate-600 mt-1">Manage client projects and track their status</p>
         </div>
-        <button className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2">
+        <button
+          onClick={() => {
+            setEditingProject(null)
+            setIsModalOpen(true)
+          }}
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2"
+        >
           <span>+</span>
           Add Project
         </button>
@@ -119,14 +140,17 @@ export default function ProjectsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-slate-600">
-                      {project.start_date ? new Date(project.start_date).toLocaleDateString() : '—'} 
+                      {project.start_date ? new Date(project.start_date).toLocaleDateString() : '—'}
                       {' → '}
                       {project.end_date ? new Date(project.end_date).toLocaleDateString() : '—'}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+                      <button
+                        onClick={() => handleEdit(project)}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                      >
                         Edit
                       </button>
                       <button
@@ -150,6 +174,18 @@ export default function ProjectsPage() {
           </table>
         </div>
       )}
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingProject ? 'Edit Project' : 'Add Project'}
+      >
+        <ProjectForm
+          project={editingProject}
+          onSuccess={handleCloseModal}
+        />
+      </Modal>
     </div>
   )
 }

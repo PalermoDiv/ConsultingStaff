@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { removeAssignment } from '../context/AppContext.actions'
+import { AssignmentForm } from '../components/forms/AssignmentForm'
+import { Modal } from '../components/ui/Modal'
+import type { Assignment } from '../types/completetypes'
 
 export default function AssignmentsPage() {
   const { state, dispatch } = useAppContext()
   const { assignments, consultants, projects, loading } = state
   const [searchQuery, setSearchQuery] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null)
 
   const filteredAssignments = assignments.filter((assignment) =>
     assignment.status.toLowerCase().includes(searchQuery.toLowerCase())
@@ -21,10 +26,20 @@ export default function AssignmentsPage() {
     return project?.project_name || 'Unknown'
   }
 
+  const handleEdit = (assignment: Assignment) => {
+    setEditingAssignment(assignment)
+    setIsModalOpen(true)
+  }
+
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to remove this assignment?')) {
       await removeAssignment(dispatch, id)
     }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingAssignment(null)
   }
 
   return (
@@ -35,7 +50,13 @@ export default function AssignmentsPage() {
           <h2 className="text-2xl font-bold text-slate-900">Assignments</h2>
           <p className="text-slate-600 mt-1">Manage consultant allocations to projects</p>
         </div>
-        <button className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2">
+        <button
+          onClick={() => {
+            setEditingAssignment(null)
+            setIsModalOpen(true)
+          }}
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2"
+        >
           <span>+</span>
           Add Assignment
         </button>
@@ -126,7 +147,10 @@ export default function AssignmentsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+                      <button
+                        onClick={() => handleEdit(assignment)}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                      >
                         Edit
                       </button>
                       <button
@@ -150,6 +174,18 @@ export default function AssignmentsPage() {
           </table>
         </div>
       )}
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingAssignment ? 'Edit Assignment' : 'Add Assignment'}
+      >
+        <AssignmentForm
+          assignment={editingAssignment}
+          onSuccess={handleCloseModal}
+        />
+      </Modal>
     </div>
   )
 }
